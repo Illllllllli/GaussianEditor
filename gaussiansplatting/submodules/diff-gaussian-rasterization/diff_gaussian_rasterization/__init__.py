@@ -9,6 +9,8 @@
 # For inquiries contact  george.drettakis@inria.fr
 #
 
+# 注意：
+# 修改后需要重新执行‘pip install gaussiansplatting/submodules/diff-gaussian-rasterization'才能生效
 from typing import NamedTuple
 import torch.nn as nn
 import torch
@@ -48,6 +50,7 @@ def rasterize_gaussians(
 
 
 class _RasterizeGaussians(torch.autograd.Function):
+    # 这个方法用于调用子模块渲染图像。
     @staticmethod
     def forward(
         ctx,
@@ -62,6 +65,7 @@ class _RasterizeGaussians(torch.autograd.Function):
         raster_settings,
     ):
         # Restructure arguments the way that the C++ lib expects them
+        # 放入一堆参数，包括3D模型的均值、2D模型的均值、形状参数、颜色、不透明度、缩放、旋转、协方差矩阵、球谐光度和渲染设置
         args = (
             raster_settings.bg,
             means3D,
@@ -85,10 +89,12 @@ class _RasterizeGaussians(torch.autograd.Function):
         )
 
         # Invoke C++/CUDA rasterizer
+        # 调试模式下
         if raster_settings.debug:
             cpu_args = cpu_deep_copy_tuple(
                 args
             )  # Copy them before they can be corrupted
+            # 在CPU中创建参数的深拷贝
             try:
                 (
                     num_rendered,
@@ -99,12 +105,14 @@ class _RasterizeGaussians(torch.autograd.Function):
                     binningBuffer,
                     imgBuffer,
                 ) = _C.rasterize_gaussians(*args)
+            # 如果运行错误则保存本次渲染的参数
             except Exception as ex:
                 torch.save(cpu_args, "snapshot_fw.dump")
                 print(
                     "\nAn error occured in forward. Please forward snapshot_fw.dump for debugging."
                 )
                 raise ex
+        # 直接渲染
         else:
             (
                 num_rendered,
@@ -117,6 +125,7 @@ class _RasterizeGaussians(torch.autograd.Function):
             ) = _C.rasterize_gaussians(*args)
 
         # Keep relevant tensors for backward
+        # 将渲染设置、渲染元素数量和一些必要张量保存到上下文中。（便于反向传播）
         ctx.raster_settings = raster_settings
         ctx.num_rendered = num_rendered
         ctx.save_for_backward(

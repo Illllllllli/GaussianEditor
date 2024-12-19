@@ -760,6 +760,7 @@ class WebUI:
 
         for idx in tqdm(view_index):
             cur_cam = self.colmap_cameras[idx]
+            cur_cam.full_proj_transform=cur_cam.full_proj_transform.to(torch.float32)
             this_frame = render(
                 cur_cam, self.gaussian, self.pipe, self.background_tensor
             )["render"]

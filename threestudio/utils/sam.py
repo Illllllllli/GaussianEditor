@@ -8,11 +8,12 @@ from torchvision.transforms import ToPILImage, ToTensor
 
 from lang_sam import LangSAM
 
+
 # from threestudio.utils.typing import *
 
 
 class LangSAMTextSegmentor(torch.nn.Module):
-    def __init__(self, sam_type="vit_h"):
+    def __init__(self, sam_type="sam2.1_hiera_small"):
         super().__init__()
         self.model = LangSAM(sam_type)
 
@@ -25,7 +26,8 @@ class LangSAMTextSegmentor(torch.nn.Module):
         for image in images:
             # breakpoint()
             image = self.to_pil_image(image.clamp(0.0, 1.0))
-            mask, _, _, _ = self.model.predict(image, prompt)
+            # mask, _, _, _ = self.model.predict([image], prompt)
+            mask = torch.tensor(self.model.predict([image], prompt)[0]['masks'])
             # breakpoint()
             if mask.ndim == 3:
                 masks.append(mask[0:1].to(torch.float32))

@@ -10,6 +10,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -28,19 +35,25 @@
   "keyToString": {
     "Python.webui.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/Illli/GaussianEditor/gaussiansplatting/submodules/diff-gaussian-rasterization/third_party",
+    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/Illli/GaussianEditor",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.语言默认设置",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\Illli\GaussianEditor" />
       <recent name="\\wsl.localhost\Ubuntu\home\Illli\GaussianEditor\gaussiansplatting\submodules\diff-gaussian-rasterization\third_party" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\Illli\GaussianEditor\gaussiansplatting\submodules\diff-gaussian-rasterization\third_party" />
+      <recent name="\\wsl.localhost\Ubuntu\home\Illli\GaussianEditor" />
+      <recent name="\\wsl.localhost\Ubuntu\home\Illli\GaussianEditor\" />
     </key>
   </component>
   <component name="RunManager">
@@ -90,7 +103,7 @@
       <workItem from="1730711448924" duration="606000" />
       <workItem from="1730712675229" duration="8028000" />
       <workItem from="1731055046497" duration="9399000" />
-      <workItem from="1734587620326" duration="4797000" />
+      <workItem from="1734587620326" duration="14671000" />
     </task>
     <task id="LOCAL-00001" summary="修复bug">
       <option name="closed" value="true" />
@@ -118,6 +131,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/GaussianEditor$webui.coverage" NAME="webui 覆盖结果" MODIFIED="1731063444984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/GaussianEditor$webui.coverage" NAME="webui 覆盖结果" MODIFIED="1734600896072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

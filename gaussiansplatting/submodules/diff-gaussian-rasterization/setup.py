@@ -28,13 +28,28 @@ setup(
                 "cuda_rasterizer/apply_weights.cu",
                 "rasterize_points.cu",
                 "ext.cpp",
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/gl3w/src/gl3w.c"),
             ],
+            # 安装eigen，glfw和gl3w后修改此处
+            include_dirs=[
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/glm"),
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/eigen"),
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/gl3w/include"),
+                '/usr/include'
+                          ],
+            library_dirs=['/usr/lib'],
+            libraries=['GL'],
             extra_compile_args={
                 "nvcc": [
                     "-I"
                     + os.path.join(
-                        os.path.dirname(os.path.abspath(__file__)), "third_party/glm/"
-                    )
+                        os.path.dirname(os.path.abspath(__file__)), "third_party/glm/")
+                    # + os.path.join(
+                    #     os.path.dirname(os.path.abspath(__file__)), "third_party/eigen/include")
+                    # + os.path.join(
+                    #     os.path.dirname(os.path.abspath(__file__)), "third_party/glew/glew-2.0.0/include")
+                    + os.path.join(
+                        os.path.dirname(os.path.abspath(__file__)), "third_party/gl3w/include")
                 ]
             },
         )

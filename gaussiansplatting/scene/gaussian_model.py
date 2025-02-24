@@ -452,6 +452,7 @@ class GaussianModel:
         self._opacity = optimizable_tensors["opacity"]
 
     # load ply
+    # 读取到点云位置、shs、不透明度、缩放、旋转
     def load_ply(self, path):
         plydata = PlyData.read(path)
 

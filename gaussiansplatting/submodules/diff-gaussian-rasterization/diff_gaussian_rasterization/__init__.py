@@ -356,7 +356,7 @@ class GaussianRasterizer(nn.Module):
             raster_settings.scale_modifier,
             cov3Ds_precomp,
             raster_settings.viewmatrix,
-            raster_settings.projmatrix,
+            raster_settings.projmatrix.to(torch.float32),
             raster_settings.tanfovx,
             raster_settings.tanfovy,
             raster_settings.image_height,

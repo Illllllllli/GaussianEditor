@@ -404,6 +404,7 @@ class WebUI:
 
 
         @self.edit_type.on_update
+        # 切换面板可见性
         def _(_):
             if self.edit_type.value == "Edit":
                 self.edit_text.visible = True

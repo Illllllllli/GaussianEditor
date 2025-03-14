@@ -137,7 +137,7 @@ class WebUI:
         self.origin_frames = {}
         self.masks_2D = {}
         self.text_segmentor = LangSAMTextSegmentor().to(get_device())
-        self.sam_predictor = self.text_segmentor.model.sam
+        self.sam_predictor = self.text_segmentor.model.sam.predictor
         self.sam_predictor.is_image_set = True
         self.sam_features = {}
         self.semantic_gauassian_masks = {}

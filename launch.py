@@ -2,7 +2,14 @@ import argparse
 import contextlib
 import logging
 import os
+import shutil
 import sys
+from pathlib import Path
+from typing import Any
+
+from pytorch_lightning import Callback, Trainer, LightningModule
+from pytorch_lightning.utilities.types import STEP_OUTPUT
+
 import wandb
 
 
@@ -38,6 +45,40 @@ class ColoredFilter(logging.Filter):
             record.levelname = f"{color_start}[{record.levelname}]"
             record.msg = f"{record.msg}{self.RESET}"
         return True
+
+
+class UpdatePlyCallback(Callback):
+    def __init__(self, interval: int = 1, save_dir: str = "outputs/temp"):
+        self.save_dir = Path(save_dir)
+        self.interval = interval
+        self.count = 0
+
+    # 每个验证轮有20个batch
+    def on_validation_epoch_end(self, trainer: Trainer, pl_module: LightningModule) -> None:
+
+        print("\nvalidation epoch end\n")
+        if ((trainer.current_epoch + 1) % self.interval) != 0:
+            return
+        try:
+            # 步骤1：清空目录(网页3中提到的文件操作模式)
+            if trainer.is_global_zero:  # 确保只在主进程执行
+                for file in self.save_dir.glob("*"):
+                    if file.is_file():
+                        file.unlink()
+                    elif file.is_dir():
+                        shutil.rmtree(file)
+                print(f"Directory has been cleared : {self.save_dir}")
+
+            # 步骤2：保存点云文件(网页1中模型操作示例的延伸)
+            if hasattr(pl_module, "gaussian") and callable(getattr(pl_module.gaussian, "save_ply", None)):
+                save_path = self.save_dir / f"{self.count}.ply"
+                pl_module.gaussian.save_ply(str(save_path))
+                print(f"[Update] Latest ply has been saved at : {save_path}")
+                self.count += 1
+
+        except Exception as e:
+            # 异常处理(网页3中提到的调试技巧延伸)
+            print(f"IO operation failed : {str(e)}")
 
 
 def main(args, extras) -> None:
@@ -144,6 +185,7 @@ def main(args, extras) -> None:
                 os.path.join(cfg.trial_dir, "configs"),
                 use_version=False,
             ),
+            UpdatePlyCallback()
         ]
         if args.gradio:
             callbacks += [
@@ -164,9 +206,9 @@ def main(args, extras) -> None:
             lambda: os.makedirs(os.path.join(cfg.trial_dir, "tb_logs"), exist_ok=True)
         )()
         loggers += [
-            TensorBoardLogger(cfg.trial_dir, name="tb_logs"),
-            CSVLogger(cfg.trial_dir, name="csv_logs"),
-        ] + system.get_loggers()
+                       TensorBoardLogger(cfg.trial_dir, name="tb_logs"),
+                       CSVLogger(cfg.trial_dir, name="csv_logs"),
+                   ] + system.get_loggers()
         rank_zero_only(
             lambda: write_to_text(
                 os.path.join(cfg.trial_dir, "cmd.txt"),
@@ -215,9 +257,9 @@ if __name__ == "__main__":
         "--gpu",
         default="0",
         help="GPU(s) to be used. 0 means use the 1st available GPU. "
-        "1,2 means use the 2nd and 3rd available GPU. "
-        "If CUDA_VISIBLE_DEVICES is set before calling `launch.py`, "
-        "this argument is ignored and all available GPUs are always used.",
+             "1,2 means use the 2nd and 3rd available GPU. "
+             "If CUDA_VISIBLE_DEVICES is set before calling `launch.py`, "
+             "this argument is ignored and all available GPUs are always used.",
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
@@ -239,6 +281,7 @@ if __name__ == "__main__":
         action="store_true",
         help="whether to enable dynamic type checking",
     )
+    # new
 
     args, extras = parser.parse_known_args()
 

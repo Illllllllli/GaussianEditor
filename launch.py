@@ -48,6 +48,7 @@ class ColoredFilter(logging.Filter):
 
 
 class UpdatePlyCallback(Callback):
+    update_flag="[update]"
     def __init__(self, interval: int = 1, save_dir: str = "outputs/temp"):
         self.save_dir = Path(save_dir)
         self.interval = interval
@@ -60,7 +61,7 @@ class UpdatePlyCallback(Callback):
         if ((trainer.current_epoch + 1) % self.interval) != 0:
             return
         try:
-            # 步骤1：清空目录(网页3中提到的文件操作模式)
+            # 步骤1：清空目录
             if trainer.is_global_zero:  # 确保只在主进程执行
                 for file in self.save_dir.glob("*"):
                     if file.is_file():
@@ -69,15 +70,15 @@ class UpdatePlyCallback(Callback):
                         shutil.rmtree(file)
                 print(f"Directory has been cleared : {self.save_dir}")
 
-            # 步骤2：保存点云文件(网页1中模型操作示例的延伸)
+            # 步骤2：保存点云文件
             if hasattr(pl_module, "gaussian") and callable(getattr(pl_module.gaussian, "save_ply", None)):
                 save_path = self.save_dir / f"{self.count}.ply"
                 pl_module.gaussian.save_ply(str(save_path))
-                print(f"[Update] Latest ply has been saved at : {save_path}")
+                print(f"{self.update_flag} Latest ply has been saved at : {save_path}")
                 self.count += 1
 
         except Exception as e:
-            # 异常处理(网页3中提到的调试技巧延伸)
+            # 异常处理
             print(f"IO operation failed : {str(e)}")
 
 
